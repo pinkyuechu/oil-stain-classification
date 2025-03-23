@@ -1,5 +1,5 @@
 FROM python:3.9
-
+# set work directory
 COPY . .
 
 # set environment variables

@@ -1,4 +1,6 @@
 version: '3.8'
+#
+# Docker compose file for the appseed project
 services:
   appseed-app:
     container_name: appseed_app

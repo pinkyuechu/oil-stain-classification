@@ -1,20 +1,12 @@
 'use strict';
 
-//
 // Sales chart
-//
-
 var SalesChart = (function() {
-
   // Variables
-
   var $chart = $('#chart-sales-dark');
 
-
   // Methods
-
   function init($chart) {
-
     var salesChart = new Chart($chart, {
       type: 'line',
       options: {
@@ -28,7 +20,7 @@ var SalesChart = (function() {
             ticks: {
               callback: function(value) {
                 if (!(value % 10)) {
-                  return '$' + value + 'k';
+                  return value + ' units'; // Changed from '$' to 'units'
                 }
               }
             }
@@ -45,32 +37,27 @@ var SalesChart = (function() {
                 content += '<span class="popover-body-label mr-auto">' + label + '</span>';
               }
 
-              content += '<span class="popover-body-value">$' + yLabel + 'k</span>';
+              content += '<span class="popover-body-value">' + yLabel + ' units</span>'; // Changed from '$' to 'units'
               return content;
             }
           }
         }
       },
       data: {
-        labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: ['Corn shoots', 'dadao cucumber', 'fulanxiaocai cucumber', 'xiaocaihenmang cucumber', 'xiaocaihenmang kelp', 'xiaofcaigongshe kelp'], // Changed to packaging types
         datasets: [{
-          label: 'Performance',
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60]
+          label: 'Packaging Types',
+          data: [30, 45, 20, 60, 50, 40] // Example data
         }]
       }
     });
 
     // Save to jQuery object
-
     $chart.data('chart', salesChart);
-
   };
 
-
   // Events
-
   if ($chart.length) {
     init($chart);
   }
-
 })();

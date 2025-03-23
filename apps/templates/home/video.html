@@ -1,0 +1,176 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}video{% endblock title %}
+
+{% block content %}
+    <style>
+        #videoPlayer {
+            width: 85%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        {#border: 1px solid #ffffff; /* 添加边框颜色 */#} background: #ffffff; /* 设置默认背景色 */
+            transition: box-shadow 0.3s ease, border-color 0.3s ease; /* 添加过渡效果 */
+        }
+
+        #tabs-text-1-tab {
+            background-color: #5e72e4; /* 设置tabs-text-1-tab的背景色为深灰色 */
+            color: #ffffff
+        }
+
+        #tabs-text-1-tab.active {
+            background-color: #ffffff; /* 设置活动状态下tabs-text-1-tab的背景色为更深的灰色 */
+            color: #5e72e4
+        }
+
+        #tabs-text-2-tab {
+            background-color: #5e72e4; /* 设置tabs-text-2-tab的背景色为亮蓝色 */
+            color: #ffffff
+        }
+
+        #tabs-text-2-tab.active {
+            background-color: #ffffff; /* 设置活动状态下tabs-text-2-tab的背景色为更深的蓝色 */
+            color: #5e72e4
+
+        }
+
+        #loading-animation {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #5e72e4;
+        }
+
+
+    </style>
+    <div class="header bg-primary pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0">Video predict</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="#">Video</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Video predict</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-lg-6 col-5 text-right">
+                        <ul class="nav nav-pills nav-fill flex-column flex-sm-row" id="tabs-text" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-text-1-tab" data-toggle="tab"
+                                   href="#tabs-text-1"
+                                   role="tab" aria-controls="tabs-text-1" aria-selected="true">油污模式</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-text-2-tab" data-toggle="tab"
+                                   href="#tabs-text-2"
+                                   role="tab" aria-controls="tabs-text-2" aria-selected="false">分类模式</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt--6">
+        <div class="row">
+            <div class="col">
+                <video id="videoPlayer" controls>
+                </video>
+
+            </div>
+        </div>
+        <div id="loading-container" style="display:none;">
+            <div id="loading-animation">
+                正在处理视频，请稍候...
+            </div>
+        </div>
+
+
+        <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="uploadButtonClick()">选择视频</button>
+
+        {% include "includes/footer.html" %}
+    </div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+    <script>
+
+        function selectVideo(mode) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'video/*'; // Accept video files only
+            input.addEventListener('change', function (event) {
+                handleFileUpload(event, mode);
+            });
+            input.click();
+        }
+
+        function handleFileUpload(event, mode) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('video', file);
+                formData.append('mode', mode); // 添加模式参数
+
+                document.getElementById('loading-container').style.display = 'block';
+                document.getElementById('loading-animation').textContent = '正在处理视频，请稍候...模式: ' + mode;
+
+                // 发送文件和模式到服务器
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Video uploaded and processed:', data);
+                        // You can display a success message or redirect to another page
+                        playVideo(data.filename);
+                        document.getElementById('loading-container').style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error uploading video:', error);
+
+                        // Handle the error (display an error message, etc.)
+                        document.getElementById('loading-container').style.display = 'none';
+                    });
+            }
+        }
+
+        function playVideo(filename) {
+            // 获取视频播放器元素
+            var videoPlayer = document.getElementById('videoPlayer');
+
+            {#// 构建视频文件的 URL#}
+            videoPlayer.src = '';
+            videoPlayer.load();
+
+            // 添加时间戳以防止缓存
+            var videoUrl = `static/results/${filename}?t=${new Date().getTime()}`;
+
+            // 设置视频源并播放
+            videoPlayer.src = videoUrl;
+            videoPlayer.style.display = 'block';
+            videoPlayer.play().catch(error => {
+                console.error('Error attempting to play video:', error);
+                // 处理错误，例如显示一个错误消息
+            });
+
+        }
+
+        function uploadButtonClick() {
+            // 检查当前选中的模式
+            var mode = document.getElementById('tabs-text-1-tab').classList.contains('active') ? '油污模式' : '分类模式';
+            selectVideo(mode);
+        }
+    </script>
+{% endblock javascripts %}

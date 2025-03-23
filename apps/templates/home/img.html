@@ -1,0 +1,220 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Maps {% endblock title %}
+
+{% block content %}
+
+    <style>
+        #resultArea {
+            display: flex; /* 使用flexbox布局 */
+            align-items: center; /* 垂直居中对齐 */
+            justify-content: space-around; /* 图片之间有间隔 */
+        }
+
+        #originalImage, #predictionImage {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 50%; /* 最大宽度为容器宽度的一半 */
+            height: auto; /* 高度自动调整以保持宽高比 */
+        }
+    </style>
+    <div class="header bg-primary pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0">Picture predict</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="#">Picture</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Picture predict</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt--6">
+        <div class="row">
+            <div class="col">
+                <div id="resultArea">
+                    <img id="originalImage" src="static/assets/img/original.png" alt="Original Image">
+                    <i class="ni ni-bold-right text-primary"></i>
+                    <img id="predictionImage" src="static/assets/img/result.png" alt="Prediction Image">
+
+                </div>
+                <p id="predictionText"></p>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <i class="fa fa-angle-left"></i>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <i class="fa fa-angle-right"></i>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <button type="button" id="uploadImage" class="btn btn-secondary btn-lg btn-block">Upload Image</button>
+                <button type="button" id="uploadFolder" class="btn btn-secondary btn-lg btn-block">Upload Folder
+                </button>
+            </div>
+        </div>
+        {% include "includes/footer.html" %}
+    </div>
+
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+    <script>
+        const uploadImageBtn = document.getElementById('uploadImage');
+        const uploadFolderBtn = document.getElementById('uploadFolder');
+        const resultArea = document.getElementById('resultArea');
+        const predictionImage = document.getElementById('predictionImage');
+        const predictionText = document.getElementById('predictionText');
+
+        let currentImageIndex = 0;
+        let originalImages = []; // 存储原始图片的路径
+        let predictedImages = []; // 存储预测结果图片的路径
+
+        function updateImageDisplay() {
+            const originalImage = document.getElementById('originalImage');
+            const predictionImage = document.getElementById('predictionImage');
+
+            originalImage.src = `/static/uploads/upload_session/${originalImages[currentImageIndex]}`;
+            predictionImage.src = `/static/results/predict_results/${predictedImages[currentImageIndex]}`;
+        }
+
+        async function getImagesList() {
+            const response = await fetch('/api/images_list');
+            const data = await response.json();
+
+            originalImages = data.original;
+            predictedImages = data.predicted;
+
+            updateImageDisplay();
+        }
+
+        // 上一张图片按钮的事件监听器
+        document.querySelector('.page-link[aria-label="Previous"]').addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex - 1 + originalImages.length) % originalImages.length;
+            updateImageDisplay();
+        });
+
+        // 下一张图片按钮的事件监听器
+        document.querySelector('.page-link[aria-label="Next"]').addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex + 1) % originalImages.length;
+            updateImageDisplay();
+        });
+
+        // Event listener for folder upload button
+        uploadFolderBtn.addEventListener('click', async () => {
+            try {
+                const folderInput = document.createElement('input');
+                folderInput.type = 'file';
+                folderInput.webkitdirectory = true;
+                folderInput.click();
+
+                folderInput.addEventListener('change', async (event) => {
+                    const files = event.target.files;
+                    if (files.length) {
+                        const formData = new FormData();
+                        for (const file of files) {
+                            formData.append('files[]', file, file.webkitRelativePath);
+                        }
+                        const response = await fetch('/api/upload_folder', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+                        console.log('Folder upload response:', data);
+                        getImagesList();
+                        // 根据响应更新UI
+                        // 这里可以添加代码来处理显示图片的逻辑
+                    }
+                });
+            } catch (error) {
+                console.error('Error uploading folder:', error);
+            }
+        });
+
+
+        // Event listener for image upload button
+        uploadImageBtn.addEventListener('click', async () => {
+            try {
+                const imageInput = document.createElement('input');
+                imageInput.type = 'file';
+                imageInput.accept = 'image/*';
+                imageInput.click();
+
+                imageInput.addEventListener('change', async (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const originalImage = document.getElementById('originalImage');
+                        originalImage.src = URL.createObjectURL(file);
+                        // Call your prediction model and get the results
+                        const prediction = await callPredictionModel(file); // Replace with actual prediction function
+                        // Display results
+                    }
+                });
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
+        });
+
+        async function callPredictionModel(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const apiUrl = '/api/predict'; // 你的Flask API的URL
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data); // 调试：打印 API 响应
+
+                if (data.result_image_path) {
+                    predictionImage.src = data.result_image_path;
+                } else {
+                    console.error('No result_image_path in the response');
+                }
+
+                predictionText.textContent = ''; // 清空预测文本
+
+                if (data.detections && data.detections.length > 0) {
+                    data.detections.forEach(detection => {
+                        predictionText.textContent += `Class: ${detection.class_name}, Confidence: ${detection.confidence.toFixed(2)}\n`;
+                    });
+                } else {
+                    console.error('No detections or empty detections array');
+                    predictionText.textContent = 'No predictions available.'; // 如果没有检测结果，显示提示信息
+                }
+            } catch (error) {
+                console.error('Error calling prediction model:', error);
+                predictionText.textContent = 'Error processing prediction.'; // 如果出现错误，显示错误信息
+            }
+        }
+    </script>
+
+{% endblock javascripts %}

@@ -1,0 +1,308 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} 主页 {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0">默认</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="#">分析面板</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">默认</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                </div>
+                <!-- Card stats -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+        <div class="row">
+            <div class="col-xl-8">
+                <div class="card bg-default">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
+                                <h5 class="h3 text-white mb-0">数据统计</h5>
+                            </div>
+                            <div class="col">
+                                <ul class="nav nav-pills justify-content-end">
+                                    <li class="nav-item mr-2 mr-md-0" data-toggle="chart"
+                                        data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 20, 10, 30, 15, 40, 20, 60, 60]}]}}'
+                                        data-prefix="" data-suffix="">
+                                        <a href="#" class="nav-link py-2 px-3 active" data-toggle="tab">
+                                            <span class="d-none d-md-block">油污程度</span>
+                                            <span class="d-md-none">M</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" data-toggle="chart" data-target="#chart-sales-dark"
+                                        data-update='{"data":{"datasets":[{"data":[0, 20, 5, 25, 10, 30, 15, 40, 40]}]}}'
+                                        data-prefix="" data-suffix="">
+                                        <a href="#" class="nav-link py-2 px-3" data-toggle="tab">
+                                            <span class="d-none d-md-block">包装种类</span>
+                                            <span class="d-md-none">W</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart -->
+                        <div class="chart">
+                            <!-- Chart wrapper -->
+                            <canvas id="chart-sales-dark" class="chart-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-header bg-transparent">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="text-uppercase text-muted ls-1 mb-1">Performance</h6>
+                                <h5 class="h3 mb-0">统计结果</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart -->
+                        <div class="chart">
+                            <canvas id="chart-bars" class="chart-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8">
+            </div>
+
+        </div>
+        <div id="main" style="width: 100%; height: 400px;"></div>
+        {% include "includes/footer.html" %}
+
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+    <!-- 引入ECharts核心库 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.2/echarts.min.js"></script>
+    <!-- 引入ECharts-GL扩展库 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts-gl/2.0.4/echarts-gl.min.js"></script>
+
+    <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+    <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+    <script>
+ var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
+
+// prettier-ignore
+var oilLevels = ['lightly oil', 'moderate oil', 'severe oil'];
+// prettier-ignore
+var packagingTypes = ['Corn shoots', 'dadao cucumber', 'fulanxiaocai cucumber', 'xiaocaihenmang cucumber', 'xiaocaihenmang kelp', 'xiaofcaigongshe kelp'];
+
+// 构造数据
+var data = [];
+for (var i = 0; i < oilLevels.length; i++) {
+    for (var j = 0; j < packagingTypes.length; j++) {
+        // 随机生成数量，仅作为示例
+        var count = Math.floor(Math.random() * 100);
+        data.push([i, j, count]);
+    }
+}
+
+// 指定不同油污程度的颜色
+var oilColors = {
+    'lightly oil': '#91cc75',
+    'moderate oil': '#fac858',
+    'severe oil': '#ee6666'
+};
+
+// 为每种包装类型分配一个独特的颜色
+var packagingColors = [
+    '#dd6b66', '#759aa0', '#e69d87', '#8dc1a9', '#ea7e53', '#eedd78'
+];
+
+option = {
+    tooltip: {},
+    visualMap: {
+        max: 100,
+        inRange: {
+            color: ['#91cc75', '#fac858', '#ee6666']
+        }
+    },
+    xAxis3D: {
+        type: 'category',
+        data: oilLevels
+    },
+    yAxis3D: {
+        type: 'category',
+        data: packagingTypes
+    },
+    zAxis3D: {
+        type: 'value'
+    },
+    grid3D: {
+        boxWidth: 200,
+        boxDepth: 80,
+        light: {
+            main: {
+                intensity: 1.2
+            },
+            ambient: {
+                intensity: 0.3
+            }
+        }
+    },
+    series: [
+        {
+            type: 'bar3D',
+            data: data.map(function (item) {
+                var oilLevel = oilLevels[item[0]];
+                var packagingTypeIndex = item[1];
+                return {
+                    value: [item[0], item[1], item[2]],
+                    itemStyle: {
+                        color: packagingColors[packagingTypeIndex],
+                        opacity: 0.8
+                    }
+                };
+            }),
+            shading: 'color',
+            label: {
+                show: false,
+                fontSize: 16,
+                borderWidth: 1
+            },
+            emphasis: {
+                label: {
+                    fontSize: 20,
+                    color: '#900'
+                },
+                itemStyle: {
+                    color: '#900'
+                }
+            }
+        }
+    ]
+};
+
+option && myChart.setOption(option);
+
+
+    </script>
+    <script>// Sales chart
+var SalesChart = (function() {
+  // Variables
+  var $chart = $('#chart-sales-dark');
+
+  // Metho
+  function init($chart) {
+    var salesChart = new Chart($chart, {
+      type: 'line',
+      options: {
+        scales: {
+          yAxes: [{
+            gridLines: {
+              lineWidth: 1,
+              color: '#dee2e6',
+              zeroLineColor: '#dee2e6'
+            },
+            ticks: {
+              callback: function(value) {
+                if (!(value % 10)) {
+                  return value + ' units';
+                }
+              }
+            }
+          }]
+        },
+        tooltips: {
+          callbacks: {
+            label: function(item, data) {
+              var label = data.datasets[item.datasetIndex].label || '';
+              var yLabel = item.yLabel;
+              var content = '';
+
+              if (data.datasets.length > 1) {
+                content += '<span class="popover-body-label mr-auto">' + label + '</span>';
+              }
+
+              content += '<span class="popover-body-value">' + yLabel + ' units</span>';
+              return content;
+            }
+          }
+        }
+      },
+      data: {
+        labels: ['Corn shoots', 'dadao cucumber', 'fulanxiaocai cucumber', 'xiaocaihenmang cucumber', 'xiaocaihenmang kelp', 'xiaofcaigongshe kelp'],
+        datasets: [{
+          label: 'Packaging Types',
+          data: [30, 45, 20, 60, 50, 40] // Example data
+        }]
+      }
+    });
+
+    // Save to jQuery object
+    $chart.data('chart', salesChart);
+  };
+
+  // Events
+  if ($chart.length) {
+    init($chart);
+  }
+})();
+</script>
+    <script>
+    // Bar chart
+var BarChart = (function() {
+  // Variables
+  var $chart = $('#chart-bars');
+
+  // Methods
+  function init($chart) {
+    var barChart = new Chart($chart, {
+      type: 'bar',
+      data: {
+        labels: ['lightly oil', 'moderate oil', 'severe oil'],
+        datasets: [{
+          label: 'Oil Contamination Levels',
+          data: [25, 50, 75] // Example data
+        }]
+      }
+    });
+
+    // Save to jQuery object
+    $chart.data('chart', barChart);
+  };
+
+  // Events
+  if ($chart.length) {
+    init($chart);
+  }
+})();
+
+    </script>
+{% endblock javascripts %}

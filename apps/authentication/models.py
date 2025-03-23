@@ -9,6 +9,14 @@ from apps import db, login_manager
 
 from apps.authentication.util import hash_pass
 
+# 在您的models.py中添加一个新的模型来保存预测结果
+class Prediction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    value = db.Column(db.Float)
+
+    def __repr__(self):
+        return '<Prediction %r>' % self.value
+
 class Users(db.Model, UserMixin):
 
     __tablename__ = 'Users'

@@ -26,7 +26,7 @@ _templates
 
 # javascript
 package-lock.json
-.vscode/symbols.json
+.vscode/  # 修改这里：从 symbols.json 改为整个目录
 
 apps/static/assets/node_modules
 apps/static/assets/yarn.lock

@@ -1,1 +1,1 @@
-web: gunicorn run:app --log-file=- 
+web: gunicorn run:app --workers=4 --timeout=30 --preload --log-file=- --log-level=info --capture-output

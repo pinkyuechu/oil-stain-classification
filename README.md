@@ -1,53 +1,54 @@
-# [Argon Dashboard Flask](https://www.creative-tim.com/product/argon-dashboard-flask) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/home?status=Material%20Dashboard,%20a%20free%20Material%20Bootstrap%204%20Admin%20Template%20%E2%9D%A4%EF%B8%8F%20https%3A//bit.ly/2Lyat1Y%20%23bootstrap%20%23material%20%23design%20%23developers%20%23freebie%20%20via%20%40CreativeTim)
+# Argon Dashboard Flask [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/home?status=Material%20Dashboard,%20a%20free%20Material%20Bootstrap%204%20Admin%20Template%20%E2%9D%A4%EF%B8%8F%20https%3A//bit.ly/2Lyat1Y%20%23bootstrap%20%23material%20%23design%20%23developers%20%23freebie%20%20via%20%40CreativeTim)
 
- ![version](https://img.shields.io/badge/version-1.0.1-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/argon-dashboard-flask.svg?maxAge=2592000)](https://github.com/creativetimofficial/argon-dashboard-flask/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/argon-dashboard-flask.svg?maxAge=2592000)](https://github.com/creativetimofficial/argon-dashboard-flask/issues?q=is%3Aissue+is%3Aclosed) [![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/creative-tim-general/Lobby) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/E4aHAQy)
+![版本](https://img.shields.io/badge/version-1.0.1-blue.svg) [![GitHub未解决问题](https://img.shields.io/github/issues/creativetimofficial/argon-dashboard-flask.svg?maxAge=2592000)](https://github.com/creativetimofficial/argon-dashboard-flask/issues?q=is%3Aopen+is%3Aissue) [![GitHub已关闭问题](https://img.shields.io/github/issues-closed-raw/creativetimofficial/argon-dashboard-flask.svg?maxAge=2592000)](https://github.com/creativetimofficial/argon-dashboard-flask/issues?q=is%3Aissue+is%3Aclosed)
 
-![Argon Dashboard Flask - Admin Dashboard coded in Django.](https://github.com/creativetimofficial/argon-dashboard-flask/blob/master/media/argon-dashboard-flask-intro.gif)
-
-<br />
-
-> Free product - **Flask Dashboard** starter project - Features:
-
-- Up-to-date [dependencies](./requirements.txt): **Flask 2.0.1**
-- [SCSS compilation](#recompile-css) via **Gulp**
-- UI Kit: **Argon Dashboard** (Free Version) provided by **[Creative-Tim](https://www.creative-tim.com/)**
-- Flask Codebase - provided by **[AppSeed](https://appseed.us/)**
-- SQLite, PostgreSQL, SQLAlchemy ORM
-- Alembic (DB schema migrations)
-- Modular design with **Blueprints**
-- Session-Based authentication (via **flask_login**)
-- Forms validation
-- Deployment scripts: Docker, Gunicorn / Nginx, Heroku
+![Argon Dashboard Flask界面演示](https://github.com/creativetimofficial/argon-dashboard-flask/blob/master/media/argon-dashboard-flask-intro.gif)
 
 <br />
 
-## Table of Contents
+> 免费开源的 **Flask仪表盘** 项目 - 主要功能：
 
-* [Demo](#demo)
-* [Docker Support](#docker-support)
-* [Quick Start](#quick-start)
-* [Documentation](#documentation)
-* [File Structure](#file-structure)
-* [Browser Support](#browser-support)
-* [Resources](#resources)
-* [Reporting Issues](#reporting-issues)
-* [Technical Support or Questions](#technical-support-or-questions)
-* [Licensing](#licensing)
-* [Useful Links](#useful-links)
-
-<br />
-
-## Demo
-
-> To authenticate use the default credentials ***test / pass*** or create a new user on the [registration page](https://www.creative-tim.com/live/argon-dashboard-flask).
-
-- **Argon Dashboard Flask** [Login Page](https://www.creative-tim.com/live/argon-dashboard-flask)
+- 最新依赖项：**Flask 2.0.1**
+- 通过 **Gulp** 编译SCSS
+- UI组件库：**Argon Dashboard**（免费版）由 **[Creative-Tim](https://www.creative-tim.com/)** 提供
+- Flask代码架构由 **[AppSeed](https://appseed.us/)** 构建
+- 支持 SQLite/PostgreSQL 数据库
+- 使用 SQLAlchemy ORM
+- Alembic 数据库迁移
+- 模块化蓝图设计
+- 基于会话的认证系统（flask_login）
+- 表单验证
+- 部署配置（Docker, Gunicorn/Nginx, Heroku）
 
 <br />
 
-## Docker Support
+## 目录
 
-> Get the code
+* [在线演示](#在线演示)
+* [Docker支持](#docker支持)
+* [快速开始](#快速开始)
+* [文档](#文档)
+* [文件结构](#文件结构)
+* [浏览器支持](#浏览器支持)
+* [资源](#资源)
+* [问题报告](#问题报告)
+* [技术支持](#技术支持)
+* [许可协议](#许可协议)
+* [相关链接](#相关链接)
+
+<br />
+
+## 在线演示
+
+> 使用默认凭证 ***test / pass*** 登录或访问[注册页面](https://www.creative-tim.com/live/argon-dashboard-flask)创建新用户。
+
+- **Argon Dashboard Flask** [登录页面](https://www.creative-tim.com/live/argon-dashboard-flask)
+
+<br />
+
+## Docker支持
+
+> 获取代码
 
 ```bash
 $ git clone https://github.com/app-generator/argon-dashboard-flask.git
